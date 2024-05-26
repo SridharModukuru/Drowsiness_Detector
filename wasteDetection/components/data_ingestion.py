@@ -2,7 +2,7 @@ import os
 import sys
 import zipfile
 import gdown
-from wasteDetection.logger import logging
+from wasteDetection.logger.logging import logger
 from wasteDetection.exception import AppException
 from wasteDetection.entity.config_entity import DataIngestionConfig
 from wasteDetection.entity.artifacts_entity import DataIngestionArtifact
@@ -28,14 +28,14 @@ class DataIngestion:
             os.makedirs(zip_download_dir, exist_ok=True)
             data_file_name = "data.zip"
             zip_file_path = os.path.join(zip_download_dir, data_file_name)
-            logging.info(f"Downloading data from {dataset_url} into file {zip_file_path}")
+            logger.info(f"Downloading data from {dataset_url} into file {zip_file_path}")
 
 
             file_id = dataset_url.split("/")[-2]
             prefix = 'https://drive.google.com/uc?/export=download&id='
             gdown.download(prefix+file_id,zip_file_path)
 
-            logging.info(f"Downloaded data from {dataset_url} into file {zip_file_path}")
+            logger.info(f"Downloaded data from {dataset_url} into file {zip_file_path}")
 
             return zip_file_path
 
@@ -55,7 +55,7 @@ class DataIngestion:
             os.makedirs(feature_store_path, exist_ok=True)
             with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
                 zip_ref.extractall(feature_store_path)
-            logging.info(f"Extracting zip file: {zip_file_path} into dir: {feature_store_path}")
+            logger.info(f"Extracting zip file: {zip_file_path} into dir: {feature_store_path}")
 
             return feature_store_path
 
@@ -66,7 +66,7 @@ class DataIngestion:
 
     
     def initiate_data_ingestion(self)-> DataIngestionArtifact:
-        logging.info("Entered initiate_data_ingestion method of Data_Ingestion class")
+        logger.info("Entered initiate_data_ingestion method of Data_Ingestion class")
         try: 
             zip_file_path = self.download_data()
             feature_store_path = self.extract_zip_file(zip_file_path)
@@ -76,8 +76,8 @@ class DataIngestion:
                 feature_store_path = feature_store_path
             )
 
-            logging.info("Exited initiate_data_ingestion method of Data_Ingestion class")
-            logging.info(f"Data ingestion artifact: {data_ingestion_artifact}")
+            logger.info("Exited initiate_data_ingestion method of Data_Ingestion class")
+            logger.info(f"Data ingestion artifact: {data_ingestion_artifact}")
 
             return data_ingestion_artifact
 
